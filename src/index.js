@@ -18,27 +18,83 @@ import i_12 from './files/img/yandex.png';
 import i_13 from './files/img/webmoney.png';
 import i_14 from './files/img/skrill.png';
 
-class MainContent extends React.Component {
-	render () {
-		return (
-		<div className="main_container">
-			<div className="main_content">
-				<p id="payment">Выберите способ оплаты</p>
-				<p className="main_content_text">Банковские карты</p>
-				<div id="mcard">
-					<img src={i_10} alt="visa & mcard" />
-				</div>
-				<p className="main_content_text">Электронные платежные системы</p>
-				<div className="cards_container">
-					<div><img src={i_11} alt="qiwi_card" /></div>
-					<div><img src={i_12} alt="yandex_card" /></div>
-					<div><img src={i_13} alt="webmoney_card" /></div>
-					<div><img src={i_14} alt="skrill_card" /></div>
-				</div>
-			</div>
-		</div>);
+function Main (i = 0) {
+	//if (typeof(i) == "object") i = 0;
+
+	if (i == 0) { return (
+		class MainContent extends React.Component {
+			render () {
+				return (
+				<div className="main_container">
+					<div className="main_content">
+						<p id="payment">Выберите способ оплаты</p>
+						<p className="main_content_text">Банковские карты</p>
+						<div id="mcard">
+							<img src={i_10} alt="visa & mcard" />
+						</div>
+						<p className="main_content_text">Электронные платежные системы</p>
+						<div className="cards_container">
+							<div><img src={i_11} alt="qiwi_card" /></div>
+							<div><img src={i_12} alt="yandex_card" /></div>
+							<div><img src={i_13} alt="webmoney_card" /></div>
+							<div><img src={i_14} alt="skrill_card" /></div>
+						</div>
+					</div>
+				</div>);
+			}
+		});
 	}
+	else if (i == 1) {
+		class MainContent extends React.Component {
+			render () {
+				return (
+				<div className="main_container">
+					<div className="main_content">
+						<div className="conclusion_content">
+							<p idName="conclusion">Заявка на вывод средств</p>
+							<div className="conclusion_line_1">
+								<div>
+									<p>Всего</p>
+									<span>$25,000</span>
+								</div>
+								<div>
+									<p>Доступные средства</p>
+									<span>$25,000</span>
+								</div>
+								<div>
+									<p>Бонусы</p>
+									<span>$1,000</span>
+								</div>
+							</div>
+							<form action="post" className="conclusion_line_2">
+								<div id="drop_menu_currency">
+									<p>Валюта</p>
+									<p id="usd">$ USD <img src="img/down_currency.png" id='currency_img' alt="down_drop" /></p>
+									<ul id="currency_drop_menu">
+										<li>¥ CNY</li>
+										<li>€ EUR</li>
+										<li>₽ RUB</li>
+										<li>$ USD</li>
+										<li>£ GBP</li>
+									</ul>
+								</div>
+								<div>
+									<p>Сумма</p>
+									<p>$   <input type="text" placeholder="100" /></p>
+								</div>
+								<input type="submit" value="Отправить заявку" />
+							</form>
+							<p className="end_text">Минимальная сумм а вывода 10,00 s. Деньги спишутся со счета в момент выплаты заявки.</p>
+							<p className="end_text">Вывод средств осуществляется теми же платежными методами, с которых вы вводили деньги в систему.</p>
+						</div>
+					</div>
+				</div>);
+			}
+		}
+	}
+	return null; 
 }
+
 class Nav extends React.Component {
 	render () {
 		return (
@@ -108,8 +164,7 @@ class Bar extends React.Component {
 		document.querySelector(".sidebar_background").style.animationName = 'BackDropMenu';
 		setTimeout(() => document.querySelector("aside").style.display = 'none', 1000);
 	}
-	render ()
-	{
+	render () {
 		return (
 		<aside>
 			<div className="sidebar_menu">
@@ -175,10 +230,32 @@ class Body extends React.Component {
 				</header>
 				<main>
 					<Nav />
-					<MainContent />
+					<Main />
 				</main>
 			</div>
 		);
 	}
 }
 ReactDOM.render(<Body />, document.querySelector("body"));
+
+document.querySelectorAll(".nav_left > p")[0].onclick = () => menuKlick(0);
+document.querySelectorAll(".nav_left > p")[1].onclick = () => menuKlick(1);
+document.querySelectorAll(".nav_left > p")[2].onclick = () => menuKlick(2);
+document.querySelectorAll(".nav_left > p")[3].onclick = () => menuKlick(3);
+document.querySelectorAll(".nav_left > p")[4].onclick = () => menuKlick(4);
+document.querySelectorAll(".nav_left > p")[5].onclick = () => menuKlick(5);
+
+var pointer = 0;
+
+menuKlick(0);
+
+function menuKlick (e) {
+	document.querySelectorAll(".nav_left > p")[pointer].style.borderColor = '#d0d8e2';
+	document.querySelectorAll(".nav_left > p")[e].style.borderColor = '#008aff';
+	pointer = e;
+
+	Main(e);
+}
+
+//document.querySelectorAll(".nav_left > p")[this.pointer].style.borderColor = 'none';
+//document.querySelectorAll(".nav_left > p")[point].style.borderColor = '#008aff';

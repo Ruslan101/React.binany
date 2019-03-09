@@ -331,7 +331,7 @@ nav {
 	border-bottom: 2px solid #d0d8e2;
 }
 .nav_left > p:hover {
-	border-color: #008aff;
+	border-color: #008aff !important;
 }
 .nav_right {
 	font-family: MuseoSansCyrl light;
