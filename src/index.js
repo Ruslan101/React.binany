@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './style/index.css';
 import DropMenu from './dropMenu.js';
 import i_1 from './files/img/Menu.png';
 import i_2 from './files/img/Menu_border.png';
@@ -17,14 +16,23 @@ import i_11 from './files/img/qiwi.png';
 import i_12 from './files/img/yandex.png';
 import i_13 from './files/img/webmoney.png';
 import i_14 from './files/img/skrill.png';
+import i_15 from './files/img/down_currency.png';
 
-function Main (i = 0) {
-	//if (typeof(i) == "object") i = 0;
+var globalPointerOnMenuItem = 0;
 
-	if (i == 0) { return (
-		class MainContent extends React.Component {
-			render () {
-				return (
+class MainContent extends React.Component {
+	constructor (props) {
+		super(props);
+
+		this.state = { value: 0 }
+	}
+	setState (proto) {
+		console.log(proto);
+		//this.setState ({ value: proto });
+	}
+	render () {
+		if (this.props.point == 0) {
+			return (
 				<div className="main_container">
 					<div className="main_content">
 						<p id="payment">Выберите способ оплаты</p>
@@ -40,18 +48,15 @@ function Main (i = 0) {
 							<div><img src={i_14} alt="skrill_card" /></div>
 						</div>
 					</div>
-				</div>);
-			}
-		});
-	}
-	else if (i == 1) {
-		class MainContent extends React.Component {
-			render () {
-				return (
+				</div>
+			);
+		}
+		else if (this.props.point == 1) {
+			return (
 				<div className="main_container">
 					<div className="main_content">
 						<div className="conclusion_content">
-							<p idName="conclusion">Заявка на вывод средств</p>
+							<p id="conclusion">Заявка на вывод средств</p>
 							<div className="conclusion_line_1">
 								<div>
 									<p>Всего</p>
@@ -69,7 +74,9 @@ function Main (i = 0) {
 							<form action="post" className="conclusion_line_2">
 								<div id="drop_menu_currency">
 									<p>Валюта</p>
-									<p id="usd">$ USD <img src="img/down_currency.png" id='currency_img' alt="down_drop" /></p>
+									<p id="usd">$ USD 
+										<img src={i_15} id='currency_img' alt="down_drop" />
+									</p>
 									<ul id="currency_drop_menu">
 										<li>¥ CNY</li>
 										<li>€ EUR</li>
@@ -88,31 +95,14 @@ function Main (i = 0) {
 							<p className="end_text">Вывод средств осуществляется теми же платежными методами, с которых вы вводили деньги в систему.</p>
 						</div>
 					</div>
-				</div>);
-			}
+				</div>
+			);
+
 		}
+		else return null;
 	}
-	return null; 
 }
 
-class Nav extends React.Component {
-	render () {
-		return (
-		<nav>
-			<div className="nav_left">
-				<p>Пополнить</p>
-				<p>Вывести</p>
-				<p>Операции</p>
-				<p>Сделки</p>
-				<p>Профиль</p>
-				<p>Котировки</p>
-			</div>
-			<div className="nav_right">
-				<p>Счет №: 31998640USD</p>
-			</div>
-		</nav>);
-	}
-}
 class Header extends React.Component
 {
 	constructor (props) {
@@ -219,6 +209,38 @@ class Bar extends React.Component {
 		</aside>);
 	}
 }
+class Main extends React.Component {
+	constructor (props) {
+		super(props);
+		this.state = { pointer: 0 };
+		this.stat = this.stat.bind(this);
+	}
+	stat () {
+		console.log(globalPointerOnMenuItem)
+		this.setState({ pointer: globalPointerOnMenuItem });
+	}
+	render () {
+		return (
+			<div>
+				<nav>
+					<div className="nav_left">
+						<p onClick={this.stat}>Пополнить</p>
+						<p onClick={this.stat}>Вывести</p>
+						<p onClick={this.stat}>Операции</p>
+						<p onClick={this.stat}>Сделки</p>
+						<p onClick={this.stat}>Профиль</p>
+						<p onClick={this.stat}>Котировки</p>
+					</div>
+					<div className="nav_right">
+						<p>Счет №: 31998640USD</p>
+					</div>
+				</nav>
+				<MainContent point={this.state.pointer} />
+			</div>
+		);
+	}
+}
+
 class Body extends React.Component {
 	render ()
 	{
@@ -229,7 +251,6 @@ class Body extends React.Component {
 					<Header />
 				</header>
 				<main>
-					<Nav />
 					<Main />
 				</main>
 			</div>
@@ -245,17 +266,29 @@ document.querySelectorAll(".nav_left > p")[3].onclick = () => menuKlick(3);
 document.querySelectorAll(".nav_left > p")[4].onclick = () => menuKlick(4);
 document.querySelectorAll(".nav_left > p")[5].onclick = () => menuKlick(5);
 
-var pointer = 0;
-
 menuKlick(0);
 
 function menuKlick (e) {
-	document.querySelectorAll(".nav_left > p")[pointer].style.borderColor = '#d0d8e2';
+	document.querySelectorAll(".nav_left > p")[globalPointerOnMenuItem].style.borderColor = '#d0d8e2';
 	document.querySelectorAll(".nav_left > p")[e].style.borderColor = '#008aff';
-	pointer = e;
+	globalPointerOnMenuItem = e;
 
-	Main(e);
+	//MainContent.State(e);
 }
+var somophore = true;
 
-//document.querySelectorAll(".nav_left > p")[this.pointer].style.borderColor = 'none';
-//document.querySelectorAll(".nav_left > p")[point].style.borderColor = '#008aff';
+document.querySelector("#drop_menu_currency").onclick = function dropMenu ()
+{
+	if (somophore) {
+		document.querySelector("#currency_drop_menu").style.display = 'flex';
+		document.querySelector("#currency_drop_menu").style.animationName = 'DropMenu';
+		document.querySelector("#currency_img").style.transform = 'rotate(180deg)';
+	}
+	else {
+		document.querySelector("#currency_drop_menu").style.animationName = 'BackDropMenu';
+		document.querySelector("#currency_img").style.transform = 'rotate(0deg)';
+		setTimeout(() => document.querySelector("#currency_drop_menu").style.display = 'none', 1500);
+	}
+
+	somophore ? somophore = false : somophore = true;
+}
