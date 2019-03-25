@@ -26,9 +26,8 @@ class MainContent extends React.Component {
 
 		this.state = { value: 0 }
 	}
-	setState (proto) {
-		console.log(proto);
-		//this.setState ({ value: proto });
+	static state (e) {
+		this.setState ({ value: e });
 	}
 	render () {
 		if (this.props.point == 0) {
@@ -102,9 +101,7 @@ class MainContent extends React.Component {
 		else return null;
 	}
 }
-
-class Header extends React.Component
-{
+class Header extends React.Component {
 	constructor (props) {
 		super(props);
 		this.animation = true;
@@ -115,7 +112,7 @@ class Header extends React.Component
 		if (this.animation) document.querySelector(".drop_menu_content").style.display = 'flex';
 		else setTimeout(() => document.querySelector(".drop_menu_content").style.display = "none", 500);
 		document.querySelector(".drop_menu_content").style.animationName = this.animation ? "DropMenu" : "BackDropMenu";
-		this.animation = this.animation ? false : true;
+		this.animation = !this.animation;
 	}
 	event_2 () {
 		document.querySelector(".sidebar_background").style.animationName = '';
@@ -216,7 +213,6 @@ class Main extends React.Component {
 		this.stat = this.stat.bind(this);
 	}
 	stat () {
-		console.log(globalPointerOnMenuItem)
 		this.setState({ pointer: globalPointerOnMenuItem });
 	}
 	render () {
@@ -271,10 +267,11 @@ menuKlick(0);
 function menuKlick (e) {
 	document.querySelectorAll(".nav_left > p")[globalPointerOnMenuItem].style.borderColor = '#d0d8e2';
 	document.querySelectorAll(".nav_left > p")[e].style.borderColor = '#008aff';
+
 	globalPointerOnMenuItem = e;
 
-	//MainContent.State(e);
-}
+	MainContent.state(e);
+}/*
 var somophore = true;
 
 document.querySelector("#drop_menu_currency").onclick = function dropMenu ()
@@ -291,4 +288,4 @@ document.querySelector("#drop_menu_currency").onclick = function dropMenu ()
 	}
 
 	somophore ? somophore = false : somophore = true;
-}
+}*/
