@@ -1,6 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { createStore } from 'redux';
+import { connect, Provider } from 'react-redux';
+import './style/index.css';
 import DropMenu from './dropMenu.js';
+
 import i_1 from './files/img/Menu.png';
 import i_2 from './files/img/Menu_border.png';
 import i_3 from './files/img/binany_logo.png';
@@ -16,89 +20,123 @@ import i_11 from './files/img/qiwi.png';
 import i_12 from './files/img/yandex.png';
 import i_13 from './files/img/webmoney.png';
 import i_14 from './files/img/skrill.png';
-import i_15 from './files/img/down_currency.png';
 
-var globalPointerOnMenuItem = 0;
+var globalState = [ 0 ]; // Хранит информацию о придыдущих состояниях
 
-class MainContent extends React.Component {
-	constructor (props) {
-		super(props);
-
-		this.state = { value: 0 }
+const rootReducer = (state = { pointer: 0 }, action) => { // Функция обрабатывающая события
+	switch (action.type) {
+		case 'onclick': {
+			document.querySelectorAll(".nav_left > p")[globalState[0]].style.borderColor = '#d0d8e2';
+			document.querySelectorAll(".nav_left > p")[state.pointer].style.borderColor = '#008aff';
+			globalState[0] = state.pointer;
+			return { ...state, pointer: action.payload }
+		}
 	}
-	static state (e) {
-		this.setState ({ value: e });
+	return state;
+};
+
+const store = createStore(rootReducer); // База данных состояний
+
+const putStateToProps = (state) => { // Записывает данные из state в props
+	return {
+		pointer: state.pointer
+	};
+};
+class Nav extends React.Component {
+	componentDidMount () {
+		this.props.dispatch({ type: 'onclick', payload: 0 });
 	}
 	render () {
-		if (this.props.point == 0) {
-			return (
-				<div className="main_container">
-					<div className="main_content">
-						<p id="payment">Выберите способ оплаты</p>
-						<p className="main_content_text">Банковские карты</p>
-						<div id="mcard">
-							<img src={i_10} alt="visa & mcard" />
-						</div>
-						<p className="main_content_text">Электронные платежные системы</p>
-						<div className="cards_container">
-							<div><img src={i_11} alt="qiwi_card" /></div>
-							<div><img src={i_12} alt="yandex_card" /></div>
-							<div><img src={i_13} alt="webmoney_card" /></div>
-							<div><img src={i_14} alt="skrill_card" /></div>
-						</div>
-					</div>
+		return (
+		<nav>
+			<div className="nav_left">
+				<p onClick={ (event) => this.props.dispatch({ type: 'onclick', payload: 0 }) }>Пополнить</p>
+				<p onClick={ (event) => this.props.dispatch({ type: 'onclick', payload: 1 }) }>Вывести</p>
+				<p onClick={ (event) => this.props.dispatch({ type: 'onclick', payload: 2 }) }>Операции</p>
+				<p onClick={ (event) => this.props.dispatch({ type: 'onclick', payload: 3 }) }>Сделки</p>
+				<p onClick={ (event) => this.props.dispatch({ type: 'onclick', payload: 4 }) }>Профиль</p>
+				<p onClick={ (event) => this.props.dispatch({ type: 'onclick', payload: 5 }) }>Котировки</p>
+			</div>
+			<div className="nav_right">
+				<p>Счет №: 31998640USD</p>
+			</div>
+		</nav>);
+	}
+}
+class TopApp extends React.Component {
+	render () {
+		return (
+		<div className="main_container">
+			<div className="main_content">
+				<p id="payment">Выберите способ оплаты</p>
+				<p className="main_content_text">Банковские карты</p>
+				<div id="mcard">
+					<img src={i_10} alt="visa & mcard" />
 				</div>
-			);
-		}
-		else if (this.props.point == 1) {
-			return (
-				<div className="main_container">
-					<div className="main_content">
-						<div className="conclusion_content">
-							<p id="conclusion">Заявка на вывод средств</p>
-							<div className="conclusion_line_1">
-								<div>
-									<p>Всего</p>
-									<span>$25,000</span>
-								</div>
-								<div>
-									<p>Доступные средства</p>
-									<span>$25,000</span>
-								</div>
-								<div>
-									<p>Бонусы</p>
-									<span>$1,000</span>
-								</div>
+				<p className="main_content_text">Электронные платежные системы</p>
+				<div className="cards_container">
+					<div><img src={i_11} alt="qiwi_card" /></div>
+					<div><img src={i_12} alt="yandex_card" /></div>
+					<div><img src={i_13} alt="webmoney_card" /></div>
+					<div><img src={i_14} alt="skrill_card" /></div>
+				</div>
+			</div>
+		</div>);
+	} // Пополнить
+}
+class Withdraw extends React.Component {
+	render () {
+		return (
+			<div className="main_container">
+				<div className="main_content">
+					<div className="conclusion_content">
+						<p id="conclusion">Заявка на вывод средств</p>
+						<div className="conclusion_line_1">
+							<div>
+								<p>Всего</p>
+								<span>$25,000</span>
 							</div>
-							<form action="post" className="conclusion_line_2">
-								<div id="drop_menu_currency">
-									<p>Валюта</p>
-									<p id="usd">$ USD 
-										<img src={i_15} id='currency_img' alt="down_drop" />
-									</p>
-									<ul id="currency_drop_menu">
-										<li>¥ CNY</li>
-										<li>€ EUR</li>
-										<li>₽ RUB</li>
-										<li>$ USD</li>
-										<li>£ GBP</li>
-									</ul>
-								</div>
-								<div>
-									<p>Сумма</p>
-									<p>$   <input type="text" placeholder="100" /></p>
-								</div>
-								<input type="submit" value="Отправить заявку" />
-							</form>
-							<p className="end_text">Минимальная сумм а вывода 10,00 s. Деньги спишутся со счета в момент выплаты заявки.</p>
-							<p className="end_text">Вывод средств осуществляется теми же платежными методами, с которых вы вводили деньги в систему.</p>
+							<div>
+								<p>Доступные средства</p>
+								<span>$25,000</span>
+							</div>
+							<div>
+								<p>Бонусы</p>
+								<span>$1,000</span>
+							</div>
 						</div>
+						<form action="post" className="conclusion_line_2">
+							<div id="drop_menu_currency">
+								<p>Валюта</p>
+								<p id="usd">$ USD 
+									<img src={i_15} id='currency_img' alt="down_drop" />
+								</p>
+								<ul id="currency_drop_menu">
+									<li>¥ CNY</li>
+									<li>€ EUR</li>
+									<li>₽ RUB</li>
+									<li>$ USD</li>
+									<li>£ GBP</li>
+								</ul>
+							</div>
+							<div>
+								<p>Сумма</p>
+								<p>$   <input type="text" placeholder="100" /></p>
+							</div>
+							<input type="submit" value="Отправить заявку" />
+						</form>
+						<p className="end_text">Минимальная сумм а вывода 10,00 s. Деньги спишутся со счета в момент выплаты заявки.</p>
+						<p className="end_text">Вывод средств осуществляется теми же платежными методами, с которых вы вводили деньги в систему.</p>
 					</div>
 				</div>
-			);
-
-		}
-		else return null;
+			</div>
+		);
+	} // Вывести
+}
+class MainContent extends React.Component {
+	render () {
+		console.log(this.props)
+		return ( <TopApp /> );
 	}
 }
 class Header extends React.Component {
@@ -112,7 +150,7 @@ class Header extends React.Component {
 		if (this.animation) document.querySelector(".drop_menu_content").style.display = 'flex';
 		else setTimeout(() => document.querySelector(".drop_menu_content").style.display = "none", 500);
 		document.querySelector(".drop_menu_content").style.animationName = this.animation ? "DropMenu" : "BackDropMenu";
-		this.animation = !this.animation;
+		this.animation = this.animation ? false : true;
 	}
 	event_2 () {
 		document.querySelector(".sidebar_background").style.animationName = '';
@@ -151,7 +189,8 @@ class Bar extends React.Component {
 		document.querySelector(".sidebar_background").style.animationName = 'BackDropMenu';
 		setTimeout(() => document.querySelector("aside").style.display = 'none', 1000);
 	}
-	render () {
+	render ()
+	{
 		return (
 		<aside>
 			<div className="sidebar_menu">
@@ -206,37 +245,6 @@ class Bar extends React.Component {
 		</aside>);
 	}
 }
-class Main extends React.Component {
-	constructor (props) {
-		super(props);
-		this.state = { pointer: 0 };
-		this.stat = this.stat.bind(this);
-	}
-	stat () {
-		this.setState({ pointer: globalPointerOnMenuItem });
-	}
-	render () {
-		return (
-			<div>
-				<nav>
-					<div className="nav_left">
-						<p onClick={this.stat}>Пополнить</p>
-						<p onClick={this.stat}>Вывести</p>
-						<p onClick={this.stat}>Операции</p>
-						<p onClick={this.stat}>Сделки</p>
-						<p onClick={this.stat}>Профиль</p>
-						<p onClick={this.stat}>Котировки</p>
-					</div>
-					<div className="nav_right">
-						<p>Счет №: 31998640USD</p>
-					</div>
-				</nav>
-				<MainContent point={this.state.pointer} />
-			</div>
-		);
-	}
-}
-
 class Body extends React.Component {
 	render ()
 	{
@@ -247,45 +255,16 @@ class Body extends React.Component {
 					<Header />
 				</header>
 				<main>
-					<Main />
+					<Provider store={store}><WrapperNavComponent /></Provider>
+					<Provider store={store}><MainContent /></Provider>
 				</main>
 			</div>
 		);
 	}
 }
-ReactDOM.render(<Body />, document.querySelector("body"));
 
-document.querySelectorAll(".nav_left > p")[0].onclick = () => menuKlick(0);
-document.querySelectorAll(".nav_left > p")[1].onclick = () => menuKlick(1);
-document.querySelectorAll(".nav_left > p")[2].onclick = () => menuKlick(2);
-document.querySelectorAll(".nav_left > p")[3].onclick = () => menuKlick(3);
-document.querySelectorAll(".nav_left > p")[4].onclick = () => menuKlick(4);
-document.querySelectorAll(".nav_left > p")[5].onclick = () => menuKlick(5);
+const WrapperMainContentComponent = connect (putStateToProps)(MainContent);
+const WrapperNavComponent = connect (putStateToProps)(Nav);
+const WrapperMainComponent = connect (putStateToProps)(Body);
 
-menuKlick(0);
-
-function menuKlick (e) {
-	document.querySelectorAll(".nav_left > p")[globalPointerOnMenuItem].style.borderColor = '#d0d8e2';
-	document.querySelectorAll(".nav_left > p")[e].style.borderColor = '#008aff';
-
-	globalPointerOnMenuItem = e;
-
-	MainContent.state(e);
-}/*
-var somophore = true;
-
-document.querySelector("#drop_menu_currency").onclick = function dropMenu ()
-{
-	if (somophore) {
-		document.querySelector("#currency_drop_menu").style.display = 'flex';
-		document.querySelector("#currency_drop_menu").style.animationName = 'DropMenu';
-		document.querySelector("#currency_img").style.transform = 'rotate(180deg)';
-	}
-	else {
-		document.querySelector("#currency_drop_menu").style.animationName = 'BackDropMenu';
-		document.querySelector("#currency_img").style.transform = 'rotate(0deg)';
-		setTimeout(() => document.querySelector("#currency_drop_menu").style.display = 'none', 1500);
-	}
-
-	somophore ? somophore = false : somophore = true;
-}*/
+ReactDOM.render(<Provider store={store}><WrapperMainComponent /></Provider>, document.querySelector("body"));
