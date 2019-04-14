@@ -371,6 +371,9 @@ nav {
 .main_content > img {
 	cursor: pointer;
 }
+
+/* Вывести */
+
 .cards_container {
 	display: flex;
 	justify-content: space-between;
@@ -392,6 +395,128 @@ nav {
 }
 .cards_container > div:hover {
 	border-color: #ff6c00;
+}
+
+/* Пополнить */
+
+.conclusion_content {
+	display: flex;
+	flex-direction: column;
+}
+#conclusion {
+	color: #191f2d;
+	font-family: MuseoSansCyrl bold;
+	font-size: 18px;
+	margin-top: 5px;
+	margin-bottom: 50px;
+}
+.conclusion_line_1 {
+	display: flex;
+	flex-direction: row;
+	color: #191f2d;
+	font-family: MuseoSansCyrl light;
+	font-size: 14px;
+}
+.conclusion_line_1 > div {
+	margin-right: 60px;
+}
+.conclusion_line_1 > div > span {
+	font-family: MuseoSansCyrl bold;
+	font-size: 20px;
+	font-weight: bold;
+}
+.conclusion_line_2 {
+	display: flex;
+	flex-direction: row;
+	margin-top: 60px;
+	justify-content: space-between;
+	color: #a5acbd;
+}
+.conclusion_line_2 > div {
+	width: 300px;
+	height: 60px;
+	display: flex;
+	flex-direction: row;
+	border: 1px solid #e7ebf0;
+	border-radius: 5px;
+	box-shadow: 0 0 4px 1px #e7ebf0;
+	align-items: center;
+	justify-content: space-around;
+	cursor: pointer;
+	margin-bottom: 50px;
+}
+.conclusion_line_2 > div > p > input {
+	border: none;
+	width: 50px;
+	height: 20px;
+	font-size: 18px;
+}
+.conclusion_line_2 > input {
+	border: 2px solid #2dab41;
+	width: 300px;
+	height: 60px;
+	font-size: 18px;
+	color: #191f2d;
+	font-family: MuseoSansCyrl normal;
+	background-color: white;
+	border-radius: 5px;
+	cursor: pointer;
+}
+.conclusion_line_2 > input:hover {
+	background-color: #2dab41;
+	color: white;
+}
+#usd {
+	font-size: 20px;
+	color: #191f2d;
+}
+#usd > img {
+	margin-bottom: 2px;
+}
+#drop_menu_currency {
+	position: relative;
+}
+
+#currency_drop_menu {
+	position: absolute;
+	list-style-type: none;
+	background-color: white;
+	border: 1px solid #e7ebf0;
+	border-radius: 5px;
+	box-shadow: 0 0 4px 1px #e7ebf0;
+	width: 120px;
+	height: 220px;
+	left: 180px;
+	top: 50px;
+	z-index: 1;
+	display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    font-size: 18px;
+    color: #191f2d;
+    font-family: MuseoSansCyrl bold;
+    cursor: pointer;
+    animation-duration: 1.5s;
+	animation-fill-mode: forwards;
+	opacity: 0;
+}
+#currency_drop_menu > li {
+	width: 80%;
+	text-align: center;
+	border: 1px solid white;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+#currency_drop_menu > li:hover {
+	background-color: #f1f3f6;
+	border-color: #f1f3f6;
+	border-radius: 5px;
+}
+.end_text {
+	color: #a5acbd;
+	font-size: 14px;
+	font-family: MuseoSansCyrl light;
 }
 
 @keyframes SideBar {
@@ -445,3 +570,4 @@ nav {
 	src: url("../files/fonts/MuseoSansCyrl_300.ttf");
 	font-family: MuseoSansCyrl Extra light;
 }
+

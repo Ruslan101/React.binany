@@ -20,42 +20,50 @@ import i_11 from './files/img/qiwi.png';
 import i_12 from './files/img/yandex.png';
 import i_13 from './files/img/webmoney.png';
 import i_14 from './files/img/skrill.png';
+import i_15 from './files/img/down_currency.png';
 
-var globalState = [ 0 ]; // Хранит информацию о придыдущих состояниях
+var globalState = [0, true]; // Хранит информацию о придыдущих состояниях
 
-const rootReducer = (state = { pointer: 0 }, action) => { // Функция обрабатывающая события
-	switch (action.type) {
-		case 'onclick': {
-			document.querySelectorAll(".nav_left > p")[globalState[0]].style.borderColor = '#d0d8e2';
-			document.querySelectorAll(".nav_left > p")[state.pointer].style.borderColor = '#008aff';
-			globalState[0] = state.pointer;
-			return { ...state, pointer: action.payload }
-		}
-	}
-	return state;
+const rootReducer = (state, action) => { // Функция обрабатывающая события
+	if (action.type == 'onclick') 
+		return { pointer: action.payload }
+	else
+		return state;
 };
 
-const store = createStore(rootReducer); // База данных состояний
+function changeColor (state) {
+	document.querySelectorAll(".nav_left > p")[globalState[0]].style.borderColor = '#d0d8e2';
+	document.querySelectorAll(".nav_left > p")[store.getState().pointer].style.borderColor = '#008aff';
+
+	globalState[0] = state.pointer;
+}
+
+const store = createStore(rootReducer, { pointer: 0 }); // База данных состояний
 
 const putStateToProps = (state) => { // Записывает данные из state в props
 	return {
 		pointer: state.pointer
 	};
 };
+var onClickEvent = store.subscribe(() => changeColor(store.getState()));
+
 class Nav extends React.Component {
 	componentDidMount () {
-		this.props.dispatch({ type: 'onclick', payload: 0 });
+		this.event('onclick', 0);
+	}
+	event (type, payload) {
+		this.props.dispatch({ type: type, payload: payload });
 	}
 	render () {
 		return (
 		<nav>
 			<div className="nav_left">
-				<p onClick={ (event) => this.props.dispatch({ type: 'onclick', payload: 0 }) }>Пополнить</p>
-				<p onClick={ (event) => this.props.dispatch({ type: 'onclick', payload: 1 }) }>Вывести</p>
-				<p onClick={ (event) => this.props.dispatch({ type: 'onclick', payload: 2 }) }>Операции</p>
-				<p onClick={ (event) => this.props.dispatch({ type: 'onclick', payload: 3 }) }>Сделки</p>
-				<p onClick={ (event) => this.props.dispatch({ type: 'onclick', payload: 4 }) }>Профиль</p>
-				<p onClick={ (event) => this.props.dispatch({ type: 'onclick', payload: 5 }) }>Котировки</p>
+				<p onClick={ (event) => this.event('onclick', 0) }>Пополнить</p>
+				<p onClick={ (event) => this.event('onclick', 1) }>Вывести</p>
+				<p onClick={ (event) => this.event('onclick', 2) }>Операции</p>
+				<p onClick={ (event) => this.event('onclick', 3) }>Сделки</p>
+				<p onClick={ (event) => this.event('onclick', 4) }>Профиль</p>
+				<p onClick={ (event) => this.event('onclick', 5) }>Котировки</p>
 			</div>
 			<div className="nav_right">
 				<p>Счет №: 31998640USD</p>
@@ -82,9 +90,24 @@ class TopApp extends React.Component {
 				</div>
 			</div>
 		</div>);
-	} // Пополнить
+	}
 }
 class Withdraw extends React.Component {
+	componentDidMount () {
+		document.querySelector("#drop_menu_currency").onclick = function () {
+			if (globalState[1]) {
+				document.querySelector("#currency_drop_menu").style.display = 'flex';
+				document.querySelector("#currency_drop_menu").style.animationName = 'DropMenu';
+				document.querySelector("#currency_img").style.transform = 'rotate(180deg)';
+			}
+			else {
+				document.querySelector("#currency_drop_menu").style.animationName = 'BackDropMenu';
+				document.querySelector("#currency_img").style.transform = 'rotate(0deg)';
+				setTimeout(() => document.querySelector("#currency_drop_menu").style.display = 'none', 1500);
+			}
+		globalState[1] = !globalState[1];
+		}
+	}
 	render () {
 		return (
 			<div className="main_container">
@@ -131,12 +154,15 @@ class Withdraw extends React.Component {
 				</div>
 			</div>
 		);
-	} // Вывести
+	}
 }
 class MainContent extends React.Component {
 	render () {
-		console.log(this.props)
-		return ( <TopApp /> );
+		switch (this.props.pointer) {
+			case 0: return <TopApp />;	
+			case 1: return <Withdraw />;			
+			default: return null;
+		}
 	}
 }
 class Header extends React.Component {
@@ -256,7 +282,7 @@ class Body extends React.Component {
 				</header>
 				<main>
 					<Provider store={store}><WrapperNavComponent /></Provider>
-					<Provider store={store}><MainContent /></Provider>
+					<Provider store={store}><WrapperMainContentComponent /></Provider>
 				</main>
 			</div>
 		);
